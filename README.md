@@ -16,6 +16,8 @@ Assuming you have all the requirements listed above downloaded and installed, ru
 
 > **Note:** This version uses the [Ultralytics](https://github.com/ultralytics/ultralytics) unified API which supports YOLOv12. The old `yolov5` PyPI package is no longer required.
 
+> **Important — delete any old compiled module:** If you previously ran the original BradyMeighan/PhantomCV and compiled `phantomcv_helper.py` with Nuitka, a `phantomcv_helper.pyd` file may exist in your working directory. Python loads `.pyd` files **before** `.py` files, so the old compiled code (which used `torch.hub.load` / YOLOv5) would be executed instead of the new Ultralytics-based code, causing the error `'Detect' object has no attribute 'grid'`. **Delete `phantomcv_helper.pyd` (and any `phantomcv_helper.cp*.pyd` variants) before running.**
+
 ## How To Make Your Own Changes
 
 ### Compile phantomcv_helper.py with Nuitka

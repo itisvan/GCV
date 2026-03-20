@@ -43,13 +43,8 @@ class Phantom:
         # Load a YOLOv12 model using the Ultralytics unified API.
         SEED = 42
         Phantom.seed_everything(SEED)
-        model_path = os.path.join(os.path.dirname(__file__), modelName + '.pt')
+        model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), modelName + '.pt')
         self.model = YOLO(model_path)
-        # Apply inference settings
-        self.model.overrides['conf'] = self.confidence
-        self.model.overrides['iou'] = self.IoUThreshold
-        self.model.overrides['agnostic_nms'] = True
-        self.model.overrides['max_det'] = 10
         return self.model
 
     @staticmethod
@@ -107,7 +102,9 @@ class Phantom:
             img_bounding = frame
 
         # Run YOLOv12 inference — imgsz=416 kept for consistency with original model training
-        results = self.model(img0, imgsz=416, verbose=False)
+        results = self.model(img0, imgsz=416, verbose=False,
+                             conf=self.confidence, iou=self.IoUThreshold,
+                             agnostic_nms=True, max_det=10)
 
         for result in results:
             if result.boxes is None:

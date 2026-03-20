@@ -1,11 +1,20 @@
+import importlib.util
 import os
 import platform
+import sys
 import settings
-import phantomcv_helper as hp
+
+# Force-load phantomcv_helper from the .py source file so that any stale
+# compiled .pyd (built from the old torch.hub-based code) cannot take priority.
+_hp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "phantomcv_helper.py")
+_spec = importlib.util.spec_from_file_location("phantomcv_helper", _hp_path)
+hp = importlib.util.module_from_spec(_spec)
+sys.modules["phantomcv_helper"] = hp
+_spec.loader.exec_module(hp)
 
 class GCVWorker:
     def __init__(self, width, height):
-        os.chdir(os.path.dirname(__file__))
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
         # Create an instance of the Phantom class
         self.phantom_instance = hp.Phantom()
         if settings.aimAssist:
